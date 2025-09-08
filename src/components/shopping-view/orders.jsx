@@ -68,7 +68,7 @@ function ShoppingOrders() {
                         className={`py-1 capitalize px-3 ${
                           orderItem?.orderStatus === "confirmed"
                             ? "bg-green-500"
-                            : orderItem?.orderStatus === "rejected"
+                            : orderItem?.orderStatus === "cancelled"
                             ? "bg-red-600"
                             : orderItem?.orderStatus === "pending"
                             ? "bg-orange-500"

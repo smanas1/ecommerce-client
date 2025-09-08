@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { CheckCircle, ShoppingBag } from "lucide-react";
+import { XCircle, ShoppingBag, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,24 +11,25 @@ import {
 } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 
-export const Success = () => {
+const Failed = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("orderId");
   const status = searchParams.get("status");
   const amount = searchParams.get("amount");
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-rose-100 p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
-          <div className="mx-auto bg-green-100 p-3 rounded-full w-16 h-16 flex items-center justify-center">
-            <CheckCircle className="h-10 w-10 text-green-600" />
+          <div className="mx-auto bg-red-100 p-3 rounded-full w-16 h-16 flex items-center justify-center">
+            <XCircle className="h-10 w-10 text-red-600" />
           </div>
-          <CardTitle className="text-2xl font-bold text-green-800">
-            Payment Successful!
+          <CardTitle className="text-2xl font-bold text-red-800">
+            Payment Failed
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Thank you for your purchase. Your order has been confirmed.
+            Unfortunately, your payment could not be processed. Please try
+            again.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -45,8 +46,8 @@ export const Success = () => {
 
             <div className="flex justify-between">
               <span className="text-gray-500">Status:</span>
-              <span className="font-medium text-green-600">
-                {status || "Completed"}
+              <span className="font-medium text-red-600">
+                {status || "Failed"}
               </span>
             </div>
 
@@ -60,7 +61,10 @@ export const Success = () => {
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
           <Button className="w-full" asChild>
-            <Link to="/shop/account">View Order Details</Link>
+            <Link to="/shop/checkout">
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Retry Payment
+            </Link>
           </Button>
           <Button variant="outline" className="w-full" asChild>
             <Link to="/shop/home">Continue Shopping</Link>
@@ -70,3 +74,5 @@ export const Success = () => {
     </div>
   );
 };
+
+export default Failed;

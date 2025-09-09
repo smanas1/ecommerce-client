@@ -1,11 +1,10 @@
-import { 
-  House, 
-  LogOut, 
-  Menu, 
-  ShoppingCart, 
-  UserCog, 
+import {
+  House,
+  LogOut,
+  Menu,
+  ShoppingCart,
+  UserCog,
   Search,
-  X
 } from "lucide-react";
 import {
   Link,
@@ -13,12 +12,11 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
-  SheetTrigger 
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
 } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,21 +34,18 @@ import { logoutUser } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
-import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";
+import MobileMenu from "./mobile-menu";
 
 function MenuItems({ isMobile = false }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchKeyword, setSearchKeyword] = useState("");
 
   function handleNavigate(getCurrentMenuItem) {
-    // For search, we want to navigate to search page with query
+    // For search, we want to navigate to search page
     if (getCurrentMenuItem.id === "search") {
-      if (searchKeyword.trim()) {
-        navigate(`/shop/search?keyword=${encodeURIComponent(searchKeyword.trim())}`);
-      }
+      navigate("/shop/search");
       return;
     }
 
@@ -73,62 +68,43 @@ function MenuItems({ isMobile = false }) {
       : navigate(getCurrentMenuItem.path);
   }
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchKeyword.trim()) {
-      navigate(`/shop/search?keyword=${encodeURIComponent(searchKeyword.trim())}`);
-    }
-  };
-
   if (isMobile) {
     return (
-      <div className="flex flex-col h-full">
-        <nav className="flex-1 overflow-y-auto py-6">
-          <div className="space-y-4">
-            {shoppingViewHeaderMenuItems
-              .filter(item => item.id !== "search")
-              .map((menuItem) => (
-                <Button
-                  key={menuItem.id}
-                  onClick={() => handleNavigate(menuItem)}
-                  variant="ghost"
-                  className="w-full justify-start h-12 text-lg font-medium"
-                >
-                  {menuItem.label}
-                </Button>
-              ))}
-          </div>
-          
-          {/* Mobile Search */}
-          <div className="mt-8 px-2">
-            <form onSubmit={handleSearch} className="relative">
-              <Input
-                type="search"
-                placeholder="Search products..."
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                className="pl-10 pr-4 py-6 rounded-full"
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
-              <Button 
-                type="submit" 
-                size="icon" 
-                variant="ghost" 
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8"
+      <nav className="overflow-y-auto py-4 flex-1">
+        <div className="space-y-1 px-2">
+          {shoppingViewHeaderMenuItems
+            .filter((item) => item.id !== "home" && item.id !== "search")
+            .map((menuItem) => (
+              <Button
+                key={menuItem.id}
+                onClick={() => handleNavigate(menuItem)}
+                variant="ghost"
+                className="w-full justify-start h-12 text-base font-medium rounded-lg hover:bg-accent transition-colors"
               >
-                <Search className="h-4 w-4" />
+                {menuItem.label}
               </Button>
-            </form>
-          </div>
-        </nav>
-      </div>
+            ))}
+        </div>
+
+        {/* Mobile Search Button */}
+        <div className="mt-6 px-2 pt-4 border-t">
+          <Button
+            onClick={() => handleNavigate({ id: "search" })}
+            variant="outline"
+            className="w-full justify-start h-12 text-base font-medium rounded-lg border-border hover:bg-accent transition-colors"
+          >
+            <Search className="mr-3 h-5 w-5 text-muted-foreground" />
+            Search Products
+          </Button>
+        </div>
+      </nav>
     );
   }
 
   return (
     <nav className="hidden lg:flex items-center gap-1 xl:gap-4">
       {shoppingViewHeaderMenuItems
-        .filter(item => item.id !== "search")
+        .filter((item) => item.id !== "search")
         .map((menuItem) => (
           <Button
             key={menuItem.id}
@@ -139,26 +115,16 @@ function MenuItems({ isMobile = false }) {
             {menuItem.label}
           </Button>
         ))}
-      
-      {/* Desktop Search */}
-      <form onSubmit={handleSearch} className="relative ml-4">
-        <Input
-          type="search"
-          placeholder="Search products..."
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-          className="pl-10 pr-4 w-64 rounded-full"
-        />
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-        <Button 
-          type="submit" 
-          size="icon" 
-          variant="ghost" 
-          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6"
-        >
-          <Search className="h-4 w-4" />
-        </Button>
-      </form>
+
+      {/* Desktop Search Button */}
+      <Button
+        onClick={() => handleNavigate({ id: "search" })}
+        variant="outline"
+        className="ml-4 gap-2"
+      >
+        <Search className="h-4 w-4" />
+        Search
+      </Button>
     </nav>
   );
 }
@@ -213,7 +179,10 @@ function HeaderRightContent() {
       {/* User Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
+          <Button
+            variant="ghost"
+            className="relative h-10 w-10 rounded-full p-0"
+          >
             <Avatar className="h-10 w-10">
               <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
                 {user?.userName?.charAt(0)?.toUpperCase() || "U"}
@@ -224,53 +193,9 @@ function HeaderRightContent() {
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user?.userName || "User"}</p>
-              <p className="text-xs leading-none text-muted-foreground">
-                {user?.email || "user@example.com"}
+              <p className="text-sm font-medium leading-none">
+                {user?.userName || "User"}
               </p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
-            <UserCog className="mr-2 h-4 w-4" />
-            <span>Account</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
-}
-
-function MobileUserMenu() {
-  const { user } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  function handleLogout() {
-    dispatch(logoutUser());
-  }
-
-  return (
-    <div className="flex justify-end">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
-            <Avatar className="h-10 w-10">
-              <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-                {user?.userName?.charAt(0)?.toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user?.userName || "User"}</p>
               <p className="text-xs leading-none text-muted-foreground">
                 {user?.email || "user@example.com"}
               </p>
@@ -322,37 +247,21 @@ function ShoppingHeader() {
         </div>
 
         {/* Mobile Menu Button */}
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="lg:hidden">
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-full max-w-xs p-0">
-            <SheetHeader className="border-b p-4">
-              <SheetTitle className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="rounded-full bg-primary p-1.5">
-                    <House className="h-4 w-4 text-primary-foreground" />
-                  </div>
-                  <span className="text-lg font-bold">Ecommerce</span>
-                </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </SheetTitle>
-            </SheetHeader>
-            <MenuItems isMobile={true} />
-            <div className="border-t p-4">
-              <MobileUserMenu />
-            </div>
-          </SheetContent>
-        </Sheet>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="lg:hidden"
+          onClick={() => setMobileMenuOpen(true)}
+        >
+          <Menu className="h-6 w-6" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+
+        {/* Mobile Menu */}
+        <MobileMenu 
+          isOpen={mobileMenuOpen} 
+          onClose={() => setMobileMenuOpen(false)} 
+        />
       </div>
     </header>
   );

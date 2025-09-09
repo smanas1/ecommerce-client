@@ -149,7 +149,8 @@ function ShoppingHome() {
               Browse Our Collections
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Explore our wide range of categories and find exactly what you're looking for
+              Explore our wide range of categories and find exactly what you're
+              looking for
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -236,14 +237,18 @@ function ShoppingHome() {
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="flex justify-center mb-6">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-8 h-8 fill-current text-yellow-300 mx-1" />
+              <Star
+                key={i}
+                className="w-8 h-8 fill-current text-yellow-300 mx-1"
+              />
             ))}
           </div>
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
             Summer Sale Up to 70% Off
           </h2>
           <p className="text-xl mb-10 max-w-2xl mx-auto">
-            Limited time offer on selected items. Don't miss out on these amazing deals!
+            Limited time offer on selected items. Don't miss out on these
+            amazing deals!
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button
@@ -256,7 +261,7 @@ function ShoppingHome() {
             <Button
               variant="outline"
               size="lg"
-              className="border-white text-white hover:bg-white/10 text-lg px-8 py-6 rounded-full shadow-lg font-bold"
+              className="bg-white text-purple-600 hover:bg-gray-100 text-lg px-8 py-6 rounded-full shadow-lg font-bold"
               onClick={() => navigate("/shop/listing")}
             >
               View All Deals
@@ -323,7 +328,8 @@ function ShoppingHome() {
               Join Our Newsletter
             </h2>
             <p className="text-gray-600 mb-8">
-              Subscribe to get special offers, free giveaways, and new product alerts
+              Subscribe to get special offers, free giveaways, and new product
+              alerts
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input

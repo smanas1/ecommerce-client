@@ -1,31 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const Carousel = ({ images, autoPlay = true, interval = 5000 }) => {
+const Carousel = ({ images = [], autoPlay = true, interval = 5000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-  };
-
-  const goToSlide = (index) => {
-    setCurrentIndex(index);
-  };
-
+  // Reset to first slide when images change
   useEffect(() => {
-    if (!autoPlay) return;
+    setCurrentIndex(0);
+  }, [images]);
+
+  const nextSlide = useCallback(() => {
+    if (!images || images.length <= 1) return;
+    setCurrentIndex(prevIndex => (prevIndex + 1) % images.length);
+  }, [images]);
+
+  const prevSlide = useCallback(() => {
+    if (!images || images.length <= 1) return;
+    setCurrentIndex(prevIndex => (prevIndex - 1 + images.length) % images.length);
+  }, [images]);
+
+  const goToSlide = useCallback((index) => {
+    if (!images || images.length <= 1) return;
+    setCurrentIndex(index);
+  }, [images]);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!autoPlay || !images || images.length <= 1) return;
 
     const timer = setInterval(() => {
       nextSlide();
     }, interval);
 
     return () => clearInterval(timer);
-  }, [currentIndex, autoPlay, interval, images.length]);
+  }, [autoPlay, interval, images, nextSlide]);
+
+  // Don't render anything if no images
+  if (!images || images.length === 0) {
+    return (
+      <div className="relative w-full h-[500px] overflow-hidden rounded-2xl bg-gray-200 flex items-center justify-center">
+        <span className="text-gray-500">No images available</span>
+      </div>
+    );
+  }
+
+  // If only one image, just show it without controls
+  if (images.length === 1) {
+    return (
+      <div 
+        className="relative w-full h-[500px] overflow-hidden rounded-2xl bg-cover bg-center"
+        style={{ backgroundImage: `url(${images[0]})` }}
+      />
+    );
+  }
 
   return (
     <div className="relative w-full h-[500px] overflow-hidden rounded-2xl">
@@ -46,7 +74,7 @@ const Carousel = ({ images, autoPlay = true, interval = 5000 }) => {
         ))}
       </div>
 
-      {/* Navigation Arrows with Enhanced Glassmorphism */}
+      {/* Navigation Arrows */}
       <Button
         variant="outline"
         size="icon"
@@ -64,7 +92,7 @@ const Carousel = ({ images, autoPlay = true, interval = 5000 }) => {
         <ChevronRight className="h-6 w-6 text-gray-800" />
       </Button>
 
-      {/* Indicators with Enhanced Glassmorphism */}
+      {/* Indicators */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
         {images.map((_, index) => (
           <button

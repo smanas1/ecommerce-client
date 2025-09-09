@@ -1,7 +1,4 @@
 import { Button } from "@/components/ui/button";
-import bannerOne from "../../assets/banner-1.webp";
-import bannerTwo from "../../assets/banner-2.webp";
-import bannerThree from "../../assets/banner-3.webp";
 import {
   Airplay,
   BabyIcon,
@@ -13,6 +10,8 @@ import {
   Shirt,
   ShirtIcon,
   ShoppingBasket,
+  Sparkles,
+  Star,
   UmbrellaIcon,
   WashingMachine,
   WatchIcon,
@@ -30,25 +29,36 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "@/components/ui/use-toast";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
+import Carousel from "@/components/ui/carousel";
 
 const categoriesWithIcon = [
-  { id: "men", label: "Men", icon: ShirtIcon },
-  { id: "women", label: "Women", icon: CloudLightning },
-  { id: "kids", label: "Kids", icon: BabyIcon },
-  { id: "accessories", label: "Accessories", icon: WatchIcon },
-  { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+  { id: "men", label: "Men", icon: ShirtIcon, color: "bg-blue-500" },
+  { id: "women", label: "Women", icon: CloudLightning, color: "bg-pink-500" },
+  { id: "kids", label: "Kids", icon: BabyIcon, color: "bg-green-500" },
+  {
+    id: "accessories",
+    label: "Accessories",
+    icon: WatchIcon,
+    color: "bg-purple-500",
+  },
+  {
+    id: "footwear",
+    label: "Footwear",
+    icon: UmbrellaIcon,
+    color: "bg-yellow-500",
+  },
 ];
 
 const brandsWithIcon = [
-  { id: "nike", label: "Nike", icon: Shirt },
-  { id: "adidas", label: "Adidas", icon: WashingMachine },
-  { id: "puma", label: "Puma", icon: ShoppingBasket },
-  { id: "levi", label: "Levi's", icon: Airplay },
-  { id: "zara", label: "Zara", icon: Images },
-  { id: "h&m", label: "H&M", icon: Heater },
+  { id: "nike", label: "Nike", icon: Shirt, color: "bg-red-500" },
+  { id: "adidas", label: "Adidas", icon: WashingMachine, color: "bg-black" },
+  { id: "puma", label: "Puma", icon: ShoppingBasket, color: "bg-yellow-500" },
+  { id: "levi", label: "Levi's", icon: Airplay, color: "bg-indigo-500" },
+  { id: "zara", label: "Zara", icon: Images, color: "bg-pink-500" },
+  { id: "h&m", label: "H&M", icon: Heater, color: "bg-blue-500" },
 ];
+
 function ShoppingHome() {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
@@ -98,14 +108,6 @@ function ShoppingHome() {
   }, [productDetails]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length);
-    }, 15000);
-
-    return () => clearInterval(timer);
-  }, [featureImageList]);
-
-  useEffect(() => {
     dispatch(
       fetchAllFilteredProducts({
         filterParams: {},
@@ -114,114 +116,188 @@ function ShoppingHome() {
     );
   }, [dispatch]);
 
-  console.log(productList, "productList");
-
   useEffect(() => {
     dispatch(getFeatureImages());
   }, [dispatch]);
 
+  // Extract image URLs for the carousel
+  const carouselImages = featureImageList?.map((item) => item.image) || [];
+
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="relative w-full h-[600px] overflow-hidden">
-        {featureImageList && featureImageList.length > 0
-          ? featureImageList.map((slide, index) => (
-              <img
-                src={slide?.image}
-                key={index}
-                className={`${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
-                } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
-              />
-            ))
-          : null}
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() =>
-            setCurrentSlide(
-              (prevSlide) =>
-                (prevSlide - 1 + featureImageList.length) %
-                featureImageList.length
-            )
-          }
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80"
-        >
-          <ChevronLeftIcon className="w-4 h-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() =>
-            setCurrentSlide(
-              (prevSlide) => (prevSlide + 1) % featureImageList.length
-            )
-          }
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80"
-        >
-          <ChevronRightIcon className="w-4 h-4" />
-        </Button>
+      {/* Carousel Slider at the top */}
+      <div className="mx-4 mt-4">
+        {carouselImages.length > 0 ? (
+          <Carousel images={carouselImages} />
+        ) : (
+          // Fallback Hero Section with simple colors
+          <div className="relative w-full h-[500px] overflow-hidden rounded-2xl bg-blue-500">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center text-white z-10 px-4">
+                <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                  Summer Collection 2024
+                </h1>
+                <p className="text-xl md:text-2xl mb-8">
+                  Discover the latest trends in fashion
+                </p>
+                <Button
+                  size="lg"
+                  className="bg-white text-blue-600 hover:bg-gray-100 hover:text-blue-700 text-lg px-8 py-6 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300"
+                  onClick={() => navigate("/shop/listing")}
+                >
+                  Shop Now <Sparkles className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <section className="py-12 bg-gray-50">
+
+      {/* Categories Section */}
+      <section className="py-12 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Shop by category
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categoriesWithIcon.map((categoryItem) => (
-              <Card
-                key={categoryItem._id}
-                onClick={() =>
-                  handleNavigateToListingPage(categoryItem, "category")
-                }
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-              >
-                <CardContent className="flex flex-col items-center justify-center p-6">
-                  <categoryItem.icon className="w-12 h-12 mb-4 text-primary" />
-                  <span className="font-bold">{categoryItem.label}</span>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+              Shop by Category
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Explore our wide range of categories and find exactly what you're
+              looking for
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {categoriesWithIcon.map((categoryItem, index) => {
+              const IconComponent = categoryItem.icon;
+              return (
+                <Card
+                  key={categoryItem.id}
+                  onClick={() =>
+                    handleNavigateToListingPage(categoryItem, "category")
+                  }
+                  className="cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-white rounded-2xl overflow-hidden group"
+                >
+                  <CardContent className="flex flex-col items-center justify-center p-6 relative">
+                    <div
+                      className={`${categoryItem.color} p-4 rounded-full mb-4 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg`}
+                    >
+                      <IconComponent className="w-8 h-8" />
+                    </div>
+                    <span className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                      {categoryItem.label}
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <section className="py-12 bg-gray-50">
+      {/* Brand Showcase */}
+      <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Shop by Brand</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {brandsWithIcon.map((brandItem) => (
-              <Card
-                onClick={() => handleNavigateToListingPage(brandItem, "brand")}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-              >
-                <CardContent className="flex flex-col items-center justify-center p-6">
-                  <brandItem.icon className="w-12 h-12 mb-4 text-primary" />
-                  <span className="font-bold">{brandItem.label}</span>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Popular Brands
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Shop from your favorite brands with exclusive offers
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {brandsWithIcon.map((brandItem, index) => {
+              const IconComponent = brandItem.icon;
+              return (
+                <Card
+                  key={brandItem.id}
+                  onClick={() =>
+                    handleNavigateToListingPage(brandItem, "brand")
+                  }
+                  className="cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden group"
+                >
+                  <CardContent className="flex flex-col items-center justify-center p-6 relative">
+                    <div
+                      className={`${brandItem.color} p-3 rounded-full mb-4 text-white group-hover:scale-110 transition-transform duration-300`}
+                    >
+                      <IconComponent className="w-6 h-6" />
+                    </div>
+                    <span className="font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
+                      {brandItem.label}
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <section className="py-12">
+      {/* Feature Products */}
+      <section className="py-12 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Feature Products
-          </h2>
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+                Featured Products
+              </h2>
+              <p className="text-gray-600 mt-2">
+                Handpicked selection of our best products
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              className="border-purple-500 text-purple-600 hover:bg-purple-50 rounded-full px-6"
+              onClick={() => navigate("/shop/listing")}
+            >
+              View All <ChevronRightIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
-              ? productList.map((productItem) => (
-                  <ShoppingProductTile
-                    handleGetProductDetails={handleGetProductDetails}
-                    product={productItem}
-                    handleAddtoCart={handleAddtoCart}
-                  />
+              ? productList.slice(0, 8).map((productItem) => (
+                  <div key={productItem._id} className="relative group">
+                    <div className="absolute -inset-1 shadow-lg bg-slate-300 rounded-lg opacity-0 group-hover:opacity-50 transition duration-300"></div>
+                    <div className="relative">
+                      <ShoppingProductTile
+                        handleGetProductDetails={handleGetProductDetails}
+                        product={productItem}
+                        handleAddtoCart={handleAddtoCart}
+                      />
+                    </div>
+                  </div>
                 ))
               : null}
           </div>
         </div>
       </section>
+
+      {/* Special Offer Banner with Simplified Design */}
+      <section className="py-16 bg-purple-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex justify-center mb-4">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-6 h-6 fill-current text-yellow-300" />
+            ))}
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Summer Sale Up to 70% Off
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Limited time offer on selected items. Don't miss out on these
+            amazing deals!
+          </p>
+          <Button
+            size="lg"
+            className="bg-white text-purple-600 hover:bg-gray-100 text-lg px-8 py-6 rounded-full shadow-lg"
+            onClick={() => navigate("/shop/listing")}
+          >
+            Shop the Sale
+          </Button>
+        </div>
+      </section>
+
       <ProductDetailsDialog
         open={openDetailsDialog}
         setOpen={setOpenDetailsDialog}

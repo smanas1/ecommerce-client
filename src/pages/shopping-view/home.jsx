@@ -257,14 +257,16 @@ function ShoppingHome() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
               ? productList.slice(0, 8).map((productItem) => (
-                  <div key={productItem._id} className="relative group">
-                    <div className="absolute -inset-1 shadow-lg bg-slate-300 rounded-lg opacity-0 group-hover:opacity-50 transition duration-300"></div>
-                    <div className="relative">
-                      <ShoppingProductTile
-                        handleGetProductDetails={handleGetProductDetails}
-                        product={productItem}
-                        handleAddtoCart={handleAddtoCart}
-                      />
+                  <div key={productItem._id} className="group">
+                    <div className="relative transition-all duration-300 transform group-hover:-translate-y-1">
+                      <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl opacity-0 group-hover:opacity-20 blur transition duration-300"></div>
+                      <div className="relative">
+                        <ShoppingProductTile
+                          handleGetProductDetails={handleGetProductDetails}
+                          product={productItem}
+                          handleAddtoCart={handleAddtoCart}
+                        />
+                      </div>
                     </div>
                   </div>
                 ))

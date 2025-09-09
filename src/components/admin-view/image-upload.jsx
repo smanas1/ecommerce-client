@@ -1,10 +1,11 @@
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
+import { useToast } from "../ui/use-toast";
 
 function ProductImageUpload({
   imageFile,
@@ -17,6 +18,8 @@ function ProductImageUpload({
   isCustomStyling = false,
 }) {
   const inputRef = useRef(null);
+  const { toast } = useToast();
+  const [uploadError, setUploadError] = useState(null);
 
   console.log(isEditMode, "isEditMode");
 
@@ -25,7 +28,10 @@ function ProductImageUpload({
     const selectedFile = event.target.files?.[0];
     console.log(selectedFile);
 
-    if (selectedFile) setImageFile(selectedFile);
+    if (selectedFile) {
+      setImageFile(selectedFile);
+      setUploadError(null); // Clear any previous error
+    }
   }
 
   function handleDragOver(event) {
@@ -35,29 +41,62 @@ function ProductImageUpload({
   function handleDrop(event) {
     event.preventDefault();
     const droppedFile = event.dataTransfer.files?.[0];
-    if (droppedFile) setImageFile(droppedFile);
+    if (droppedFile) {
+      setImageFile(droppedFile);
+      setUploadError(null); // Clear any previous error
+    }
   }
 
   function handleRemoveImage() {
     setImageFile(null);
+    setUploadedImageUrl("");
+    setUploadError(null);
     if (inputRef.current) {
       inputRef.current.value = "";
     }
   }
 
   async function uploadImageToCloudinary() {
+    if (!imageFile) return;
+    
     setImageLoadingState(true);
-    const data = new FormData();
-    data.append("my_file", imageFile);
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/admin/products/upload-image`,
-      data
-    );
-    console.log(response, "response");
+    setUploadError(null);
+    
+    try {
+      const data = new FormData();
+      data.append("my_file", imageFile);
+      
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/admin/products/upload-image`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      
+      console.log(response, "response");
 
-    if (response?.data?.success) {
-      setUploadedImageUrl(response.data.result.url);
+      if (response?.data?.success) {
+        setUploadedImageUrl(response.data.result.url);
+        setImageLoadingState(false);
+        toast({
+          title: "Success",
+          description: "Image uploaded successfully",
+        });
+      } else {
+        throw new Error(response?.data?.message || "Upload failed");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      setUploadError(error.message || "Failed to upload image");
       setImageLoadingState(false);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to upload image",
+        variant: "destructive",
+      });
     }
   }
 
@@ -67,7 +106,7 @@ function ProductImageUpload({
 
   return (
     <div
-      className={`w-full  mt-4 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}
+      className={`w-full mt-4 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}
     >
       <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
       <div
@@ -84,6 +123,7 @@ function ProductImageUpload({
           ref={inputRef}
           onChange={handleImageFileChange}
           disabled={isEditMode}
+          accept="image/*"
         />
         {!imageFile ? (
           <Label
@@ -115,6 +155,11 @@ function ProductImageUpload({
           </div>
         )}
       </div>
+      {uploadError && (
+        <div className="text-red-500 text-sm mt-2">
+          Error: {uploadError}
+        </div>
+      )}
     </div>
   );
 }

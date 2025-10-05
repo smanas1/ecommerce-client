@@ -6,7 +6,14 @@ import { loginUser } from "@/store/auth-slice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Eye, EyeOff, Mail } from "lucide-react";
 
 const initialState = {
@@ -62,7 +69,9 @@ function AuthLogin() {
           <div className="mx-auto bg-primary/10 p-3 rounded-full">
             <Mail className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-bold tracking-tight">
+            Welcome Back
+          </CardTitle>
           <CardDescription>
             Sign in to your account to continue shopping
           </CardDescription>
@@ -70,7 +79,9 @@ function AuthLogin() {
         <CardContent>
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email Address
+              </Label>
               <div className="relative">
                 <Input
                   id="email"
@@ -87,9 +98,11 @@ function AuthLogin() {
                 </div>
               </div>
             </div>
-            
+
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium">
+                Password
+              </Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -102,8 +115,17 @@ function AuthLogin() {
                   required
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-muted-foreground" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-muted-foreground"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
                 <button
@@ -119,7 +141,7 @@ function AuthLogin() {
                 </button>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <input
@@ -128,23 +150,47 @@ function AuthLogin() {
                   type="checkbox"
                   className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                 />
-                <Label htmlFor="remember-me" className="text-sm text-muted-foreground">Remember me</Label>
+                <Label
+                  htmlFor="remember-me"
+                  className="text-sm text-muted-foreground"
+                >
+                  Remember me
+                </Label>
               </div>
-              <Link to="#" className="text-sm font-medium text-primary hover:underline">
+              <Link
+                to="#"
+                className="text-sm font-medium text-primary hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
-            
-            <Button 
-              type="submit" 
+
+            <Button
+              type="submit"
               className="w-full py-5 rounded-lg text-base font-medium transition-all duration-300 hover:shadow-lg"
               disabled={isLoading}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Signing in...
                 </span>
@@ -152,18 +198,50 @@ function AuthLogin() {
                 "Sign In"
               )}
             </Button>
+
+            <div className="flex flex-col sm:flex-row gap-2 mt-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() =>
+                  setFormData({
+                    email: "user@demo.com",
+                    password: "user@121",
+                  })
+                }
+              >
+                User Credentials
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() =>
+                  setFormData({
+                    email: "admin@demo.com",
+                    password: "admin@121",
+                  })
+                }
+              >
+                Admin Credentials
+              </Button>
+            </div>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center pb-6">
           <p className="text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link to="/auth/register" className="font-medium text-primary hover:underline">
+            <Link
+              to="/auth/register"
+              className="font-medium text-primary hover:underline"
+            >
               Register
             </Link>
           </p>
         </CardFooter>
       </Card>
-      
+
       <div className="text-center text-xs text-muted-foreground">
         <p>© 2024 E-Commerce. All rights reserved.</p>
       </div>

@@ -16,6 +16,7 @@ import {
   WashingMachine,
   WatchIcon,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -58,7 +59,8 @@ const brandsWithIcon = [
   { id: "h&m", label: "H&M", icon: Heater, color: "bg-blue-500" },
 ];
 
-function ShoppingHome() {
+function 
+() {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
@@ -125,14 +127,58 @@ function ShoppingHome() {
 
   return (
     <div className="flex  flex-col min-h-screen">
-      {/* Hero Section */}
+      {/* Enhanced Hero Section */}
       <section className="relative w-full h-[500px] overflow-hidden">
         <div className="relative w-full h-full">
           <Carousel images={carouselImages} />
-          {/* Overlay for better text readability when carousel is active */}
-          {carouselImages.length > 0 && (
-            <div className="absolute inset-0 bg-black/30"></div>
-          )}
+          {/* Gradient overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent"></div>
+          
+          {/* Hero content */}
+          <div className="absolute inset-0 flex items-center">
+            <div className="container mx-auto px-4 z-10">
+              <div className="max-w-2xl ml-0 lg:ml-20 text-white">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="space-y-6"
+                >
+                  <div className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
+                    <span className="text-sm font-medium">Summer Collection 2024</span>
+                  </div>
+                  
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                    Discover Amazing Products at Unbeatable Prices
+                  </h1>
+                  
+                  <p className="text-lg md:text-xl text-gray-200 max-w-lg">
+                    Shop the latest trends with exclusive deals and fast delivery. 
+                    Your satisfaction is our priority.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transition-all z-10"
+                      onClick={() => navigate("/shop/listing")}
+                    >
+                      Shop Now
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all"
+                      onClick={() => document.querySelector('section.py-16.bg-gradient-to-br.from-gray-50.to-gray-100')?.scrollIntoView({ behavior: "smooth" })}
+                    >
+                      Explore Categories
+                    </motion.button>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

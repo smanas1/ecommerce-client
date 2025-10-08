@@ -17,6 +17,18 @@ function CheckAuth({ isAuthenticated, user, children }) {
     }
   }
 
+  if (location.pathname === "/shop") {
+    if (!isAuthenticated) {
+      return <Navigate to="/auth/login" />;
+    } else {
+      if (user?.role === "admin") {
+        return <Navigate to="/admin/dashboard" />;
+      } else {
+        return <Navigate to="/shop/home" />;
+      }
+    }
+  }
+
   if (
     !isAuthenticated &&
     !(

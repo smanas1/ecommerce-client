@@ -23,6 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import SearchProducts from "./pages/shopping-view/search";
 import { Success } from "./pages/payment/Success";
 import Failed from "./pages/payment/Failed";
+import Landing from "./pages/shopping-view/Landing";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -34,22 +35,12 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  if (isLoading) return <Skeleton className="w-[800] bg-black h-[600px]" />;
-
   console.log(isLoading, user);
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Routes>
-        <Route
-          path="/"
-          element={
-            <CheckAuth
-              isAuthenticated={isAuthenticated}
-              user={user}
-            ></CheckAuth>
-          }
-        />
+        <Route path="/" element={<Landing user={user} />} />
         <Route
           path="/auth"
           element={
@@ -82,6 +73,7 @@ function App() {
             </CheckAuth>
           }
         >
+          {/* <Route path="/" element={<ShoppingHome />} /> */}
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="checkout" element={<ShoppingCheckout />} />

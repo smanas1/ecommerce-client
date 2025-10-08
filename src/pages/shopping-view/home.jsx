@@ -124,7 +124,7 @@ function ShoppingHome() {
   const carouselImages = featureImageList?.map((item) => item.image) || [];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex  flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative w-full h-[500px] overflow-hidden">
         <div className="relative w-full h-full">

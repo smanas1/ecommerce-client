@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 
-export const Success = () => {
+const Success = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("orderId");
   const status = searchParams.get("status");
@@ -70,3 +70,5 @@ export const Success = () => {
     </div>
   );
 };
+
+export default Success;

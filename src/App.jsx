@@ -21,9 +21,10 @@ import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import SearchProducts from "./pages/shopping-view/search";
-import { Success } from "./pages/payment/Success";
+
 import Failed from "./pages/payment/Failed";
 import Landing from "./pages/shopping-view/Landing";
+import Success from "./pages/payment/Success";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -41,6 +42,8 @@ function App() {
     <div className="flex flex-col min-h-screen bg-white">
       <Routes>
         <Route path="/" element={<Landing user={user} />} />
+        <Route path="success-payment" element={<Success />} />
+        <Route path="failed-payment" element={<Failed />} />
         <Route
           path="/auth"
           element={
@@ -73,13 +76,11 @@ function App() {
             </CheckAuth>
           }
         >
-          {/* <Route path="/" element={<ShoppingHome />} /> */}
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
-          <Route path="success-payment" element={<Success />} />
-          <Route path="failed-payment" element={<Failed />} />
+
           <Route path="search" element={<SearchProducts />} />
         </Route>
         <Route path="/unauth-page" element={<UnauthPage />} />

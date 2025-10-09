@@ -29,6 +29,18 @@ export const addFeatureImage = createAsyncThunk(
   }
 );
 
+export const deleteFeatureImage = createAsyncThunk(
+  "/common/feature/delete",
+  async (data) => {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_URL}/common/feature/delete`,
+      { data: data }
+    );
+
+    return response.data;
+  }
+);
+
 const commonSlice = createSlice({
   name: "commonSlice",
   initialState,

@@ -1,26 +1,33 @@
 import ProductImageUpload from "@/components/admin-view/image-upload";
 import { Button } from "@/components/ui/button";
-import { addFeatureImage, getFeatureImages } from "@/store/common-slice";
+import {
+  addFeatureImage,
+  getFeatureImages,
+  deleteFeatureImage,
+} from "@/store/common-slice";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
-import { 
-  CloudUpload, 
-  Image, 
-  Images, 
+import {
+  CloudUpload,
+  Image,
+  Images,
   UploadCloud,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Trash2,
+  Trash,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { use } from "react";
 
 function AdminDashboard() {
   const [imageFile, setImageFile] = useState(null);
@@ -28,7 +35,10 @@ function AdminDashboard() {
   const [imageLoadingState, setImageLoadingState] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null); // null, 'success', 'error'
   const dispatch = useDispatch();
-  const { featureImageList, isLoading } = useSelector((state) => state.commonFeature);
+  const { featureImageList, isLoading } = useSelector(
+    (state) => state.commonFeature
+  );
+
   const { toast } = useToast();
 
   function handleUploadFeatureImage() {
@@ -56,6 +66,24 @@ function AdminDashboard() {
         toast({
           title: "Upload failed",
           description: "Failed to upload the feature image",
+          variant: "destructive",
+        });
+      }
+    });
+  }
+
+  function handleDeleteFeatureImage(image) {
+    dispatch(deleteFeatureImage(image)).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(getFeatureImages());
+        toast({
+          title: "Image deleted successfully",
+          description: "The feature image has been removed from the carousel",
+        });
+      } else {
+        toast({
+          title: "Deletion failed",
+          description: "Failed to delete the feature image",
           variant: "destructive",
         });
       }
@@ -100,10 +128,10 @@ function AdminDashboard() {
                 imageLoadingState={imageLoadingState}
                 isCustomStyling={true}
               />
-              
+
               <div className="mt-6">
-                <Button 
-                  onClick={handleUploadFeatureImage} 
+                <Button
+                  onClick={handleUploadFeatureImage}
                   className="w-full"
                   disabled={!uploadedImageUrl || imageLoadingState}
                 >
@@ -119,23 +147,25 @@ function AdminDashboard() {
                     </>
                   )}
                 </Button>
-                
+
                 {/* Upload Status */}
                 {uploadStatus && (
-                  <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 ${
-                    uploadStatus === 'success' 
-                      ? 'bg-green-50 text-green-700' 
-                      : 'bg-red-50 text-red-700'
-                  }`}>
-                    {uploadStatus === 'success' ? (
+                  <div
+                    className={`mt-4 p-3 rounded-lg flex items-center gap-2 ${
+                      uploadStatus === "success"
+                        ? "bg-green-50 text-green-700"
+                        : "bg-red-50 text-red-700"
+                    }`}
+                  >
+                    {uploadStatus === "success" ? (
                       <CheckCircle className="h-5 w-5" />
                     ) : (
                       <AlertCircle className="h-5 w-5" />
                     )}
                     <span>
-                      {uploadStatus === 'success' 
-                        ? 'Image uploaded successfully!' 
-                        : 'Upload failed. Please try again.'}
+                      {uploadStatus === "success"
+                        ? "Image uploaded successfully!"
+                        : "Upload failed. Please try again."}
                     </span>
                   </div>
                 )}
@@ -158,14 +188,17 @@ function AdminDashboard() {
               {isLoading ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, index) => (
-                    <div key={index} className="h-48 bg-muted rounded-lg animate-pulse" />
+                    <div
+                      key={index}
+                      className="h-48 bg-muted rounded-lg animate-pulse"
+                    />
                   ))}
                 </div>
               ) : featureImageList && featureImageList.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {featureImageList.map((featureImgItem, index) => (
-                    <div 
-                      key={featureImgItem._id} 
+                    <div
+                      key={featureImgItem._id}
                       className="relative group overflow-hidden rounded-lg border"
                     >
                       <img
@@ -177,6 +210,15 @@ function AdminDashboard() {
                         <Badge variant="secondary" className="bg-white/90">
                           Position {index + 1}
                         </Badge>
+
+                        <div
+                          onClick={() =>
+                            handleDeleteFeatureImage(featureImgItem)
+                          }
+                          className="bg-white/90 p-1 rounded-full ml-auto cursor-pointer hover:bg-red-100"
+                        >
+                          <Trash2 className="text-red-500" />
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -184,7 +226,9 @@ function AdminDashboard() {
               ) : (
                 <div className="text-center py-12">
                   <Image className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-1">No feature images</h3>
+                  <h3 className="text-lg font-medium mb-1">
+                    No feature images
+                  </h3>
                   <p className="text-muted-foreground">
                     Upload images to display them in the homepage carousel
                   </p>
